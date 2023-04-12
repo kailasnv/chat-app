@@ -1,6 +1,5 @@
 import 'package:chat_app/presentation/core/constants.dart';
-import 'package:chat_app/presentation/login_or_register_page/login_or_register.dart';
-import 'package:chat_app/presentation/sign_in_out_page/sign_user.dart';
+import 'package:chat_app/presentation/sign_in_out_page/sign_user_screen.dart';
 import 'package:chat_app/presentation/widgets_common/smooth_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -61,7 +60,7 @@ class IntroScreen extends StatelessWidget {
                 onTap: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     // builder: (context) => const LoginOrRegisterPage(),
-                    builder: (context) => SignUserInOrOut(),
+                    builder: (context) => SignUserScreen(),
                   ),
                 ),
                 child: SmoothButton(
