@@ -31,12 +31,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
+  flutter_native_splash: ^2.2.19
   google_fonts: ^4.0.3
   lottie: ^2.3.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0
-  flutter_native_splash: ^2.2.19
+
   flutter_test:
     sdk: flutter
 
