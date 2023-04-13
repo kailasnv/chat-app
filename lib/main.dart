@@ -1,10 +1,16 @@
-import 'package:chat_app/presentation/intro_page/intro_screen.dart';
+import 'package:chat_app/auth_page/auth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // initiallize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
   // whenever  initialization is completed, remove the splash screen:
   FlutterNativeSplash.remove();
@@ -19,7 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Chat-App",
       theme: ThemeData(),
-      home: const IntroScreen(),
+      home: const AuthPage(),
     );
   }
 }

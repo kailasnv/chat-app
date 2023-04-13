@@ -1,5 +1,6 @@
 import 'package:chat_app/presentation/core/constants.dart';
 import 'package:chat_app/presentation/widgets_common/smooth_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -8,9 +9,15 @@ import '../widgets_common/gradient_back_gnd.dart';
 import '../widgets_common/logo_tile.dart';
 
 // ignore: must_be_immutable
-class SignUserScreen extends StatelessWidget {
-  SignUserScreen({super.key});
+class SignUserScreen extends StatefulWidget {
+  const SignUserScreen({super.key});
 
+  @override
+  State<SignUserScreen> createState() => _SignUserScreenState();
+}
+
+class _SignUserScreenState extends State<SignUserScreen> {
+  //
   // controllers for email & passwords
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -23,6 +30,75 @@ class SignUserScreen extends StatelessWidget {
   // some greeting messages for the user
   final String greetingSignIn = "Welcome back you've been missed!";
   final String greetingSignUp = "Let's create a new account for you .";
+
+  // Sign  user Methods
+  void signInMethod() async {
+    try {
+      showLoading();
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+    } on FirebaseException catch (e) {
+      Navigator.of(context).pop();
+      showErrorMessage(context, e.code);
+    }
+  }
+
+  void signUpMethod() async {
+    try {
+      if (_passwordController.text == _confirmPasswordController.text) {
+        showLoading();
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pop();
+      } else {
+        showErrorMessage(context, "password does not match !");
+      }
+    } on FirebaseException catch (e) {
+      Navigator.of(context).pop();
+      showErrorMessage(context, e.code);
+    }
+  }
+
+  void showLoading() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  void showErrorMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(color: Colors.black)),
+        margin: const EdgeInsets.all(15),
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +198,9 @@ class SignUserScreen extends StatelessWidget {
                   if (isSignInNotifier.value) {
                     // S I G N  I N   B U T T O N
                     return GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        signInMethod();
+                      },
                       child: const SmoothButton(
                         buttonWidth: 300,
                         buttonTitle: "Sign In",
@@ -133,7 +211,9 @@ class SignUserScreen extends StatelessWidget {
                   } else {
                     // S I G N  U P   B U T T O N
                     return GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        signUpMethod();
+                      },
                       child: const SmoothButton(
                         buttonWidth: 300,
                         buttonTitle: "Sign Up",
@@ -175,11 +255,14 @@ class SignUserScreen extends StatelessWidget {
                       Text(
                         isSignInNotifier.value
                             ? "Do not have an Account ? "
-                            : "Already have an account ?, then ",
+                            : "Already have an account ? then ",
                       ),
                       GestureDetector(
                         onTap: () {
                           isSignInNotifier.value = !isSignInNotifier.value;
+                          _emailController.text = "";
+                          _passwordController.text = "";
+                          _confirmPasswordController.text = "";
                           // print(isSignInNotifier.value.toString());
                         },
                         child: Text(

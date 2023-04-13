@@ -60,7 +60,7 @@ class IntroScreen extends StatelessWidget {
                 onTap: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     // builder: (context) => const LoginOrRegisterPage(),
-                    builder: (context) => SignUserScreen(),
+                    builder: (context) => const SignUserScreen(),
                   ),
                 ),
                 child: SmoothButton(
