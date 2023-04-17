@@ -1,18 +1,22 @@
-import 'package:chat_app/presentation/widgets_common/custom_textfeild.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-  final TextEditingController _messageController = TextEditingController();
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  /*
+      App Home screen
+  */
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!.email;
-
     return Scaffold(
-      backgroundColor: Colors.deepPurple[100],
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         title: const Text("chatMe"),
@@ -24,52 +28,33 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.logout))
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            // use listview here
-            child: Container(
-              child: Center(
-                child: Text(
-                  user.toString(),
-                ),
+      drawer: Drawer(
+        backgroundColor: Colors.deepPurple[400],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              " Signed in as : {widget.userModal!.email}",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
               ),
             ),
-          ),
-          //
-          // send message
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              children: [
-                Container(
-                  width: 275,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Center(
-                    child: TextField(
-                      controller: _messageController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "write your message",
-                        contentPadding: EdgeInsets.only(left: 10),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                const CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Colors.deepPurple,
-                  child: Icon(Icons.send),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
+      ),
+      //
+      body: SafeArea(
+        child: ListView.separated(
+          itemCount: 5,
+          separatorBuilder: (context, index) => const Divider(),
+          itemBuilder: (context, index) {
+            return const ListTile(
+              title: Text("names"),
+            );
+          },
+        ),
       ),
     );
   }

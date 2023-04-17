@@ -1,4 +1,7 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:chat_app/auth_page/auth_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Chat-App",
       theme: ThemeData(),
+      //
       home: const AuthPage(),
     );
   }

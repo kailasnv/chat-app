@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:chat_app/presentation/core/constants.dart';
 import 'package:chat_app/presentation/widgets_common/smooth_button.dart';
+import 'package:chat_app/ui%20pop%20ups/ui_popups.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -8,7 +12,6 @@ import '../widgets_common/custom_textfeild.dart';
 import '../widgets_common/gradient_back_gnd.dart';
 import '../widgets_common/logo_tile.dart';
 
-// ignore: must_be_immutable
 class SignUserScreen extends StatefulWidget {
   const SignUserScreen({super.key});
 
@@ -23,8 +26,21 @@ class _SignUserScreenState extends State<SignUserScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  //
 
-  // this notifier used to manage the sign in & sign up feature
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _nameController.dispose();
+    isSignInNotifier.dispose();
+
+    super.dispose();
+  }
+
+  // this notifier used to manage the sign in & sign up features
   ValueNotifier<bool> isSignInNotifier = ValueNotifier(true);
 
   // some greeting messages for the user
@@ -34,70 +50,59 @@ class _SignUserScreenState extends State<SignUserScreen> {
   // Sign  user Methods
   void signInMethod() async {
     try {
-      showLoading();
+      ShowPopUps.circleLoading(context);
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // ignore: use_build_context_synchronously
+
       Navigator.of(context).pop();
     } on FirebaseException catch (e) {
       Navigator.of(context).pop();
-      showErrorMessage(context, e.code);
+      ShowPopUps.showErrorMessage(context, e.code);
     }
   }
 
   void signUpMethod() async {
     try {
+      // create user
       if (_passwordController.text == _confirmPasswordController.text) {
-        showLoading();
+        ShowPopUps.circleLoading(context);
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        // ignore: use_build_context_synchronously
+
+        addUserDetailsToDatabase();
         Navigator.of(context).pop();
       } else {
-        showErrorMessage(context, "password does not match !");
+        ShowPopUps.showErrorMessage(context, "password does not match !");
       }
     } on FirebaseException catch (e) {
       Navigator.of(context).pop();
-      showErrorMessage(context, e.code);
+      ShowPopUps.showErrorMessage(context, e.code);
     }
   }
 
-  void showLoading() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: SizedBox(
-            height: 30,
-            width: 30,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-    );
-  }
-
-  void showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: const TextStyle(color: Colors.black)),
-        margin: const EdgeInsets.all(15),
-        backgroundColor: Colors.white,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
+  // add user details while signup
+  Future addUserDetailsToDatabase() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      print(" >>>> NO  CURRENT USER ");
+    } else {
+      print(" UID >>>>  ${currentUser.uid}");
+    }
+    // add user details
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser!.uid)
+        .set({
+      'name': _nameController.text,
+      'email': _emailController.text,
+      'image': "",
+      'uid': currentUser.uid,
+      'date': DateTime.now(),
+    });
   }
 
   @override
@@ -142,11 +147,34 @@ class _SignUserScreenState extends State<SignUserScreen> {
                   },
                 ),
               ),
-              // just a  animation above the textfeild
-              Lottie.asset(
-                "assets/animations/chatting.json",
-                width: 180,
-                fit: BoxFit.cover,
+              // name feild or lottie animation
+              ValueListenableBuilder(
+                valueListenable: isSignInNotifier,
+                builder: (context, value, child) => isSignInNotifier.value
+                    ? Lottie.asset(
+                        "assets/animations/chatting.json",
+                        width: 200,
+                        height: 175,
+                        fit: BoxFit.cover,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          children: [
+                            Lottie.asset(
+                              "assets/animations/customer.json",
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            ),
+                            CustomTextfield(
+                              controller: _nameController,
+                              hintText: "enter your name",
+                              isObscureText: false,
+                            ),
+                          ],
+                        ),
+                      ),
               ),
               /* 
                   Textfiels

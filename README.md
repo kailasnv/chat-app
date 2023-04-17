@@ -1,4 +1,4 @@
-# chat_app - Firebase Cloud-Firestore
+# chat_app - Firebase Firestore
 
 A Flutter chat app made using firebase .
 
