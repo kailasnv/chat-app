@@ -36,8 +36,8 @@ class _SignUserScreenState extends State<SignUserScreen> {
     try {
       showLoading();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
@@ -52,8 +52,8 @@ class _SignUserScreenState extends State<SignUserScreen> {
       if (_passwordController.text == _confirmPasswordController.text) {
         showLoading();
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
         );
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
