@@ -1,3 +1,5 @@
+import 'package:chat_app/domain/modals/user_modal.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +11,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  /*
-      App Home screen
-  */
+  ////
+  //*
+
+  Future<UserModal> getCurrentUserDetails() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+
+      UserModal userModal = UserModal.fromJson(userData);
+      return userModal;
+    } else {
+      print("NO CURRENT USER !");
+      throw Exception();
+    }
+  }
+  //*/
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.deepPurple[400],
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
-              " Signed in as : {widget.userModal!.email}",
+              " Signed in as : {_userModal.}",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
