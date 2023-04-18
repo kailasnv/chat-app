@@ -44,8 +44,8 @@ class _SignUserScreenState extends State<SignUserScreen> {
   ValueNotifier<bool> isSignInNotifier = ValueNotifier(true);
 
   // some greeting messages for the user
-  final String greetingSignIn = "Welcome back you've been missed!";
-  final String greetingSignUp = "Let's create a new account for you .";
+  static const String greetingSignIn = "Welcome back you've been missed!";
+  static const String greetingSignUp = "Let's create a new account for you .";
 
   // Sign  user Methods
   void signInMethod() async {
@@ -84,15 +84,12 @@ class _SignUserScreenState extends State<SignUserScreen> {
     }
   }
 
-  // add user details while signup
+  /* add user details while signup */
+
   Future addUserDetailsToDatabase() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      print(" >>>> NO  CURRENT USER ");
-    } else {
-      print(" UID >>>>  ${currentUser.uid}");
-    }
-    // add user details
+
+    // add current user details to the collection
     await FirebaseFirestore.instance
         .collection('users')
         .doc(currentUser!.uid)

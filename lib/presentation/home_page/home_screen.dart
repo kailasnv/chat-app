@@ -1,7 +1,10 @@
-import 'package:chat_app/domain/modals/user_modal.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app/presentation/home_page/widgets/custom_appbar.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../application/bloc_current_user/current_user_bloc.dart';
+import '../widgets_common/users_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,66 +14,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ////
-  //*
-
-  Future<UserModal> getCurrentUserDetails() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      DocumentSnapshot userData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .get();
-
-      UserModal userModal = UserModal.fromJson(userData);
-      return userModal;
-    } else {
-      print("NO CURRENT USER !");
-      throw Exception();
-    }
-  }
-  //*/
-
   @override
   Widget build(BuildContext context) {
+    /*  calling events */
+    BlocProvider.of<CurrentUserBloc>(context).add(GetCurrentUserDataEvent());
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text("chatMe"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              icon: const Icon(Icons.logout))
-        ],
+      /* appbar section */
+      appBar: const PreferredSize(
+        preferredSize: Size(double.infinity, 55),
+        child: CustomAppbar(),
       ),
-      drawer: Drawer(
-        backgroundColor: Colors.deepPurple[400],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              " Signed in as : {_userModal.}",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-            ),
-          ],
-        ),
-      ),
-      //
+      /* List of messaged  users */
       body: SafeArea(
         child: ListView.separated(
-          itemCount: 5,
-          separatorBuilder: (context, index) => const Divider(),
+          separatorBuilder: (context, index) =>
+              Divider(color: Colors.grey.shade700),
+          itemCount: 6,
           itemBuilder: (context, index) {
-            return const ListTile(
-              title: Text("names"),
-            );
+            return const UserTile(userName: "Kailas");
           },
         ),
       ),
