@@ -1,34 +1,74 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
+import 'package:chat_app/domain/modals/user_modal.dart';
+import 'package:chat_app/presentation/chat_page/widget/message_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
-  final String name;
-  ChatScreen({super.key, required this.name});
+  final UserModal currentUser;
+  final String friendID;
+  final String friendName;
+  final String friendImage;
+  ChatScreen({
+    super.key,
+    required this.currentUser,
+    required this.friendID,
+    required this.friendName,
+    required this.friendImage,
+  });
 
   final TextEditingController _messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple[100],
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: Text(name),
+        title: Text(friendName),
       ),
+      /*     */
       body: Column(
         children: [
+          //1 - chats
           Expanded(
-            // use listview here
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return const ListTile(
-                  title: Text("messages"),
-                );
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUser.uid)
+                  .collection('messages')
+                  .doc(friendID)
+                  .collection('chats')
+                  .orderBy('date', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text("say Hi ."));
+                  }
+                  // if there is any chats available
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    reverse: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      bool isItMe = snapshot.data!.docs[index]['senderId'] ==
+                          currentUser.uid;
+                      return MessageTile(
+                        isItMe: isItMe,
+                        messages: snapshot.data!.docs[index]['message'],
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
               },
             ),
           ),
-          //
-          // send message to others
+
+          /*
+            2nd section - send message to others 
+         */
           Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
@@ -53,11 +93,63 @@ class ChatScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // send button
-                const CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Colors.deepPurple,
-                  child: Icon(Icons.send),
+                // when  send button  Clicks
+                GestureDetector(
+                  onTap: () async {
+                    String _message = _messageController.text;
+                    _messageController.clear();
+                    /* store message on current uid  */
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(currentUser.uid)
+                        .collection('messages')
+                        .doc(friendID)
+                        .collection('chats')
+                        .add({
+                      'senderId': currentUser.uid,
+                      'receiverId': friendID,
+                      'message': _message,
+                      'type': "text",
+                      'date': DateTime.now(),
+                    }).then((value) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(currentUser.uid)
+                          .collection('messages')
+                          .doc(friendID)
+                          .set({
+                        'last_msg': _message,
+                      });
+                    });
+                    /* store message on friend uid  */
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(friendID)
+                        .collection('messages')
+                        .doc(currentUser.uid)
+                        .collection('chats')
+                        .add({
+                      'senderId': currentUser.uid,
+                      'receiverId': friendID,
+                      'message': _message,
+                      'type': "text",
+                      'date': DateTime.now(),
+                    }).then((value) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(friendID)
+                          .collection('messages')
+                          .doc(currentUser.uid)
+                          .set({
+                        'last_msg': _message,
+                      });
+                    });
+                  },
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.teal[300],
+                    child: const Icon(Icons.send, color: Colors.white),
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,9 @@
 import 'package:chat_app/presentation/search%20page/search_screen.dart';
 import 'package:chat_app/presentation/settings_page/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../application/bloc_search/search_bloc.dart';
 
 class CustomAppbar extends StatelessWidget {
   const CustomAppbar({super.key});

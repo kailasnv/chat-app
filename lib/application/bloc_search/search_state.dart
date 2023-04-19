@@ -2,10 +2,10 @@ part of 'search_bloc.dart';
 
 class SearchState {
   final bool isLoading;
-  final List<Map<String, dynamic>>? usersList;
+  final List<Map<String, dynamic>>? otherUsersList;
   SearchState({
     required this.isLoading,
-    this.usersList,
+    this.otherUsersList,
   });
 }
 

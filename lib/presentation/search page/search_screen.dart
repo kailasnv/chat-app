@@ -14,30 +14,45 @@ class SearchScreen extends StatelessWidget {
     return Scaffold(
       /* textfield  for search  */
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            // when pops from this screen ,
+            // same time i clears the controller and  call the event once more to clear the ,
+            // already searched results .
+            searchController.text = "";
+            BlocProvider.of<SearchBloc>(context).add(
+              SearchOtherUsersEvent(searchController: searchController),
+            );
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+        // search feild
         title: TextField(
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
           controller: searchController,
           autofocus: true,
+
           decoration: const InputDecoration(
             hintText: "Search users..",
             hintStyle: TextStyle(color: Colors.teal),
             border: InputBorder.none,
           ),
-          // calling search event
+          // calling search event - and passing the text same time
           onChanged: (value) {
-            print(value);
-
             BlocProvider.of<SearchBloc>(context).add(
-              SearchOtherUsersEvent(searchQuery: value),
+              SearchOtherUsersEvent(searchController: searchController),
             );
           },
         ),
-        // cancel button
+        // cancel button - clears the controller & results
         actions: [
           IconButton(
               onPressed: () {
                 searchController.text = "";
+                BlocProvider.of<SearchBloc>(context).add(
+                    SearchOtherUsersEvent(searchController: searchController));
               },
               icon: const Icon(Icons.cancel_outlined, color: Colors.teal)),
         ],
@@ -48,21 +63,31 @@ class SearchScreen extends StatelessWidget {
        */
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
+          // loading indicator
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
+            ));
           }
-          if (state.usersList != null) {
+          // show list of results
+          if (state.otherUsersList != null) {
+            // print(state.otherUsersList.toString());
             return ListView.separated(
               separatorBuilder: (context, index) =>
                   Divider(color: Colors.grey.shade700),
-              itemCount: state.usersList!.length,
+              itemCount: state.otherUsersList!.length,
               itemBuilder: (context, index) => UserTile(
-                userName: state.usersList![index]['name'] ?? "NO NAME",
-                userImage: state.usersList![index]['image'],
+                friendName: state.otherUsersList![index]['name'] ?? "NO NAME",
+                friendImage: state.otherUsersList![index]['image'],
+                friendID: state.otherUsersList![index]['uid'],
               ),
             );
           } else {
-            return const Center(child: Text("NO USERS !"));
+            return const Center(
+                child: Text("Search with username",
+                    style: TextStyle(color: Colors.grey)));
           }
         },
       ),

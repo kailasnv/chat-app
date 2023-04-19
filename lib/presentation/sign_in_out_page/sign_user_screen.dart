@@ -200,7 +200,10 @@ class _SignUserScreenState extends State<SignUserScreen> {
                         children: const [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 35),
-                            child: Text("Forgot Password"),
+                            child: Text(
+                              "Forgot Password",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ),
                         ],
                       );
@@ -255,7 +258,10 @@ class _SignUserScreenState extends State<SignUserScreen> {
               */
               kHeight,
               Divider(thickness: 0.7, color: Colors.white10.withOpacity(0.5)),
-              const Text("or continue with"),
+              const Text(
+                "or continue with",
+                style: TextStyle(color: Colors.black),
+              ),
 
               kHeight,
               Row(
@@ -281,6 +287,7 @@ class _SignUserScreenState extends State<SignUserScreen> {
                         isSignInNotifier.value
                             ? "Do not have an Account ? "
                             : "Already have an account ? then ",
+                        style: const TextStyle(color: Colors.black),
                       ),
                       GestureDetector(
                         onTap: () {

@@ -4,6 +4,6 @@ part of 'search_bloc.dart';
 abstract class SearchEvent {}
 
 class SearchOtherUsersEvent extends SearchEvent {
-  final String searchQuery;
-  SearchOtherUsersEvent({required this.searchQuery});
+  final TextEditingController searchController;
+  SearchOtherUsersEvent({required this.searchController});
 }
