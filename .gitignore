@@ -45,6 +45,3 @@ app.*.map.json
 
 #private keys
 lib/infrastructure/
-
-#firebase options file
-lib/firebase_options.dart
