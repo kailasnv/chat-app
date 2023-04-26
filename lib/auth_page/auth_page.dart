@@ -1,7 +1,8 @@
-import 'package:chat_app/presentation/home_page/home_screen.dart';
 import 'package:chat_app/presentation/sign_in_out_page/sign_user_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../presentation/home_page/home_screen.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});

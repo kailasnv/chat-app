@@ -2,7 +2,7 @@
 
 import 'package:chat_app/presentation/core/constants.dart';
 import 'package:chat_app/presentation/widgets_common/smooth_button.dart';
-import 'package:chat_app/ui%20pop%20ups/ui_popups.dart';
+import 'package:chat_app/utils/ui_popups.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

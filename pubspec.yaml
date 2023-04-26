@@ -33,12 +33,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.4.0
   firebase_core: ^2.7.0
+  firebase_storage: ^11.1.1
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
   flutter_native_splash: ^2.2.19
   google_fonts: ^4.0.3
   google_sign_in: ^6.0.1
+  image_picker: ^0.8.7+4
   lottie: ^2.3.2
 
 dev_dependencies:
