@@ -10,3 +10,8 @@ class LoadOtherUsers extends UsersEvent {
 
   LoadOtherUsers({required this.searchQuery});
 }
+
+class UpdateProfilePhoto extends UsersEvent {
+  final BuildContext context;
+  UpdateProfilePhoto({required this.context});
+}

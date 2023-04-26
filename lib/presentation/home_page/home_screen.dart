@@ -1,10 +1,11 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:chat_app/presentation/core/constants.dart';
 import 'package:chat_app/presentation/home_page/widgets/friend_tile.dart';
 import 'package:chat_app/presentation/home_page/widgets/search_textfield.dart';
 import 'package:chat_app/presentation/settings%20page/settings_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,17 +13,28 @@ import 'package:lottie/lottie.dart';
 
 import '../../application/bloc/users_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   //controller for search
   final searchController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     /* calling events */
-    BlocProvider.of<UsersBloc>(context).add(LoadCurrentUser());
+    context.read<UsersBloc>().add(LoadCurrentUser());
+    // calling this event helps to reload the current user data somehow
+    context.read<UsersBloc>().add(LoadOtherUsers(searchQuery: ''));
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       /* gradient screen  backgnd */
       body: CustomScrollView(
@@ -116,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                     }
                     // home data
                     if (state.currentUser != null) {
-                      // if search results is empty , show recents chats
+                      // if search results is empty , show recents chats .
                       // Listening to Streams..
                       return StreamBuilder(
                         stream: FirebaseFirestore.instance
@@ -127,7 +139,13 @@ class HomeScreen extends StatelessWidget {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             // recents chats
-                            return ListView.builder(
+                            return ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const Divider(
+                                endIndent: 25,
+                                indent: 25,
+                                color: Colors.black,
+                              ),
                               shrinkWrap: true,
                               reverse: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -162,7 +180,12 @@ class HomeScreen extends StatelessWidget {
                             );
                           } else {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: LinearProgressIndicator(
+                              color: Colors.black,
+                              backgroundColor: Colors.black,
+                              value: 1,
+                              minHeight: 1,
+                            ));
                           }
                         },
                       );

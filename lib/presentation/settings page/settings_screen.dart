@@ -1,4 +1,5 @@
 import 'package:chat_app/presentation/core/constants.dart';
+import 'package:chat_app/presentation/settings%20page/widgets/user_profile.dart';
 import 'package:chat_app/presentation/widgets_common/smooth_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,32 +27,64 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 25, top: 15, bottom: 10),
             child: Row(
               children: [
-                // image
                 BlocBuilder<UsersBloc, UsersState>(
                   builder: (context, state) {
                     if (state.currentUser != null) {
-                      // place profile image here .
-                      return const CircleAvatar(
-                        radius: 30,
-                        child: Icon(Icons.person_2_rounded),
-                      );
+                      if (state.currentUser!.image.isNotEmpty) {
+                        return GestureDetector(
+                          onTap: () =>
+                              // go to profile edit screen
+                              Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const GoToProfile(),
+                          )),
+                          child: ClipRRect(
+                            // current user profile image
+                            borderRadius: BorderRadius.circular(30),
+                            child: Image.network(
+                              state.currentUser!.image,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return GestureDetector(
+                          onTap: () =>
+                              // go to profile edit screen
+                              Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const GoToProfile(),
+                          )),
+                          child: ClipRRect(
+                            // current user profile image
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                                height: 70,
+                                width: 70,
+                                color: Colors.black,
+                                child: const Center(
+                                    child: Icon(Icons.person,
+                                        color: Colors.white))),
+                          ),
+                        );
+                      }
                     } else {
                       return const CircleAvatar(
                         radius: 30,
+                        backgroundColor: Colors.black,
                         child: Icon(Icons.person_2_rounded),
                       );
                     }
                   },
                 ),
                 kWidth,
-                // name
+                // N A M E
                 BlocBuilder<UsersBloc, UsersState>(
                   builder: (context, state) {
                     if (state.currentUser != null) {
                       return Text(
                         state.currentUser!.name,
                         style: const TextStyle(
-                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       );
@@ -73,16 +106,16 @@ class SettingsScreen extends StatelessWidget {
           BlocBuilder<UsersBloc, UsersState>(
             builder: (context, state) {
               if (state.currentUser != null) {
-                return Text(
-                  "signed in as : ${state.currentUser!.email}",
-                  style: const TextStyle(color: Colors.black),
-                );
+                return Text("signed in as : ${state.currentUser!.email}");
               } else {
                 return kWidth;
               }
             },
           ),
           kHeight,
+          /*
+             Sign Out / Log out 
+           */
           GestureDetector(
             onTap: () {
               FirebaseAuth.instance.signOut();

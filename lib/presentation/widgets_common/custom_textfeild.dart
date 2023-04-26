@@ -24,6 +24,7 @@ class CustomTextfield extends StatelessWidget {
         child: TextField(
           controller: controller,
           obscureText: isObscureText,
+          style: const TextStyle(color: Colors.black),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.black.withOpacity(0.5)),
