@@ -14,5 +14,9 @@ Also this is one of my initial projects while in the journy of learning Flutter 
           7. flutter_native_splash: ^2.2.19
           8. google_fonts: ^4.0.3
           9. image_picker: ^0.8.7+4
-          10 .lottie: ^2.3.2
+          10.lottie: ^2.3.2
+   Get these packages on https://pub.dev/ 
    
+   ## 📱 Screenshots 
+   
+   ![chat-app sign user ](https://user-images.githubusercontent.com/130171990/235055518-e09f1811-1d8d-4650-b336-ee49b350e7b8.jpg)
