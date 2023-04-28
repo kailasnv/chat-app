@@ -20,3 +20,6 @@ Also this is one of my initial projects while in the journy of learning Flutter 
    ## 📱 Screenshots 
    
    ![chat-app sign user ](https://user-images.githubusercontent.com/130171990/235055518-e09f1811-1d8d-4650-b336-ee49b350e7b8.jpg)
+   
+   ![chat-app home](https://user-images.githubusercontent.com/130171990/235055598-063a140b-2cd2-42cd-9a75-1987a934a94b.jpg)
+
