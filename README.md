@@ -32,3 +32,6 @@ Also this is one of my initial projects while in the journy of learning Flutter 
   #pending / Bugs
   1. still i have'nt done the email verification part .
   2. Google sign in & Apple sign in .
+  3. forgot password .
+  
+   
