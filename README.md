@@ -30,9 +30,6 @@ Also this is one of my initial projects while in the journy of learning Flutter 
   When app opens we get a login screen where we can either log in to our accout using our email and passowrd , or create a new accout for us .
   In the home screen we can search other users with their username and can start messaging them . 
   
-  ### pending / Bugs
-  1. still i have'nt done the email verification part .
-  2. Google sign in & Apple sign in .
-  3. forgot password .
+ 
   
    
